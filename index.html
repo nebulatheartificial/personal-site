@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abhimanyu Nair - Hyper-Interactive Portfolio // v2.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        
+        :root {
+            --dark-bg: #03030A;
+            --accent-primary: #00FFFF;
+            --accent-secondary: #FF00FF;
+            --text-light: #E0E0E0;     
+            --font-main: 'Share Tech Mono', monospace;
+            --section-height: 150vh;
+            --scroll-tint-color: rgb(16, 5, 32); /* Initial color for dynamic background tint */
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: var(--font-main);
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+        
+        h1, h2, h3, strong {
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        .highlight {
+            color: var(--accent-secondary);
+            text-shadow: 0 0 5px var(--accent-secondary);
+        }
+
+        @keyframes glitch-skew {
+            0% { transform: skewX(0deg); }
+            5% { transform: skewX(1deg); }
+            10% { transform: skewX(-1deg); }
+            15% { transform: skewX(0.5deg); }
+            20% { transform: skewX(0deg); }
+        }
+        @keyframes glitch-translate {
+            0% { transform: translate(0); }
+            2% { transform: translate(2px, -2px); }
+            4% { transform: translate(-2px, 2px); }
+            6% { transform: translate(1px, -1px); }
+            8% { transform: translate(0); }
+        }
+
+        #hero h1 {
+            font-size: clamp(2em, 8vw, 6em);
+            color: var(--accent-primary);
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.9), 0 0 25px rgba(0, 255, 255, 0.5);
+            letter-spacing: 5px;
+            animation: glitch-skew 10s infinite step-end, glitch-translate 5s infinite step-end;
+            position: relative;
+        }
+
+        .parallax-wrapper {
+            height: 100vh;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            perspective: 1px; 
+            scroll-behavior: smooth;
+        }
+
+        .parallax-group {
+            position: relative;
+            min-height: var(--section-height); 
+            transform-style: preserve-3d;
+            z-index: 10;
+        }
+        
+        .parallax-layer-deep {
+            position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+            transform: translateZ(-3px) scale(4); 
+            z-index: -3;
+        }
+        
+        .parallax-layer-back {
+            position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+            transform: translateZ(-1.5px) scale(2.5); 
+            z-index: -2;
+        }
+
+        .parallax-layer-base {
+            position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+            transform: translateZ(0); 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+            padding: 5% 2%;
+            box-sizing: border-box;
+        }
+
+        
+        @keyframes flow-deep {
+            to { background-position: 500px 500px; }
+        }
+        @keyframes flow-mid {
+            to { background-position: -300px -300px; }
+        }
+
+        .particle-field {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: radial-gradient(circle at center, var(--scroll-tint-color) 0%, #03030A 100%);
+            transition: background 0.1s; 
+        }
+
+        .particle-field::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 200%; height: 200%;
+            background-image: radial-gradient(#222 1px, transparent 0);
+            background-size: 50px 50px;
+            animation: flow-deep 60s linear infinite;
+        }
+
+        .particle-field::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 200%; height: 200%;
+            background-image: radial-gradient(var(--accent-primary) 1.5px, transparent 0);
+            background-size: 80px 80px;
+            opacity: 0.2;
+            animation: flow-mid 40s linear infinite;
+        }
+
+        
+        .crt-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .crt-effect::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+                        linear-gradient(90deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1));
+            z-index: 9999;
+            background-size: 100% 4px, 3px 100%;
+            opacity: 0.15;
+        }
+
+        @keyframes noise {
+            0%, 100% { clip: rect(0px, 9999px, 2px, 0px); }
+            10% { clip: rect(90px, 9999px, 92px, 0px); }
+            20% { clip: rect(10px, 9999px, 12px, 0px); }
+            30% { clip: rect(50px, 9999px, 52px, 0px); }
+            40% { clip: rect(150px, 9999px, 152px, 0px); }
+            50% { clip: rect(20px, 9999px, 22px, 0px); }
+            60% { clip: rect(100px, 9999px, 102px, 0px); }
+            70% { clip: rect(180px, 9999px, 182px, 0px); }
+            80% { clip: rect(40px, 9999px, 42px, 0px); }
+            90% { clip: rect(120px, 9999px, 122px, 0px); }
+        }
+
+        .crt-effect::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 100px rgba(0, 255, 255, 0.4) inset;
+            animation: noise 2s infinite step-end;
+            filter: blur(1px);
+        }
+
+        
+        #portfolio {
+            background-color: transparent;
+            padding: 80px 0;
+            z-index: 20;
+        }
+
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .data-module {
+            background: rgba(10, 10, 30, 0.9);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.4);
+            transition: transform 0.4s, box-shadow 0.4s;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        
+        .data-module:hover {
+            transform: translateY(-5px) rotateX(1deg);
+            box-shadow: 0 0 30px var(--accent-primary), 0 5px 50px rgba(0, 255, 255, 0.5);
+            border-color: var(--accent-primary);
+        }
+        
+        .data-module::before {
+            content: '// ACTIVATING SCAN...';
+            position: absolute;
+            top: 0; left: 0;
+            color: var(--accent-primary);
+            font-size: 1.5em;
+            opacity: 0.7;
+            transition: transform 0.4s ease-out;
+            transform: translateX(-100%);
+            padding: 5px;
+            background: rgba(0, 0, 0, 0.5);
+            width: 100%;
+            text-align: left;
+        }
+
+        .data-module:hover::before {
+            transform: translateX(0);
+        }
+
+        .data-module h3 {
+            color: var(--accent-primary);
+            text-shadow: 0 0 5px var(--accent-primary);
+            font-size: 1.8em;
+            margin-top: 0;
+            border-bottom: 2px solid var(--accent-secondary);
+            padding-bottom: 10px;
+        }
+
+        .stat-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+            transition: background-color 0.3s;
+        }
+
+        .stat-line:hover {
+            background-color: rgba(255, 0, 255, 0.05);
+            padding: 10px 5px;
+            border-left: 3px solid var(--accent-secondary);
+        }
+
+        .stat-value {
+            color: var(--accent-secondary);
+            font-size: 1.2em;
+            font-weight: bold;
+            text-shadow: 0 0 5px var(--accent-secondary);
+        }
+
+        .skill-bar {
+            margin-bottom: 15px;
+        }
+        .skill-bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .progress-container {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--accent-primary);
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-secondary), var(--accent-primary));
+            transition: width 1s ease-out;
+            box-shadow: 0 0 8px var(--accent-primary);
+        }
+        
+        .bio-section {
+            background: rgba(10, 10, 20, 0.95);
+            padding: 40px;
+            border-left: 5px solid var(--accent-primary);
+            margin-top: 60px;
+            position: relative;
+            border-radius: 5px;
+        }
+        
+        .bio-section h2 {
+            color: var(--accent-secondary);
+            text-shadow: 0 0 8px var(--accent-secondary);
+            border: none;
+        }
+        
+        
+        #system-status {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-bottom: 1px solid var(--accent-primary);
+            box-shadow: 0 0 10px var(--accent-primary);
+            z-index: 100;
+            font-size: 0.8em;
+        }
+        #system-status span {
+            color: var(--accent-primary);
+        }
+
+
+        
+        #contact {
+            background-color: var(--dark-bg);
+            min-height: 50vh;
+        }
+        
+        .contact-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border: 1px solid var(--accent-secondary);
+            box-shadow: 0 0 15px var(--accent-secondary);
+            border-radius: 5px;
+        }
+        
+        .contact-content a {
+            color: var(--accent-primary);
+            font-size: 1.5em;
+            padding: 0 20px;
+            transition: text-shadow 0.3s, color 0.3s;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+        
+        .contact-content a:hover {
+            color: var(--accent-secondary);
+            text-shadow: 0 0 10px var(--accent-secondary);
+        }
+        
+        
+        @media (max-width: 768px) {
+            .data-grid {
+                grid-template-columns: 1fr;
+            }
+            .parallax-group {
+                min-height: var(--section-height); 
+            }
+            #hero h1 {
+                letter-spacing: 2px;
+                font-size: 14vw;
+            }
+            .data-module h3 {
+                font-size: 1.4em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="crt-effect"></div>
+
+    <div id="system-status">
+        <span>// SYSTEM STATUS: <span id="system-time">00:00:00</span></span>
+        <span>// USER: ABHIMANYU_NAIR</span>
+        <span>// LOCATION: CALIFORNIA_GRID</span>
+    </div>
+
+    <div class="parallax-wrapper">
+
+        
+        <section id="hero" class="parallax-group">
+            <div class="parallax-layer-deep">
+                <div class="particle-field"></div> 
+            </div>
+            <div class="parallax-layer-back">
+                <div class="particle-field" style="opacity: 0.1; background-image: radial-gradient(#FF00FF 1.5px, transparent 0);"></div>
+            </div>
+            
+            <div class="parallax-layer-base">
+                <div class="hero-title-box" style="text-align: center;">
+                    <h1>Abhimanyu Nair</h1>
+                    <h2 style="color: var(--accent-secondary);">Code. Lead. Conquer.</h2>
+                    <p style="font-size: 1.2em; color: var(--text-light); padding: 10px; border: 1px solid rgba(255, 255, 255, 0.2);">A multifaceted leader driving impact in technology, education, and community.</p>
+                    <a href="#portfolio" style="color: var(--accent-primary); text-decoration: none; display: inline-block; margin-top: 30px; font-size: 1.1em;">[ACCESS_DATA_LOG]</a>
+                </div>
+            </div>
+        </section>
+
+        
+        <section id="portfolio" class="parallax-group" style="min-height: var(--section-height); align-items: flex-start;">
+            <div class="parallax-layer-base">
+                <div class="content-container" style="padding-top: 100px;">
+                    
+                    <h2>// System Data Log: Credentials & Missions</h2>
+                    
+                    <div class="data-grid">
+                        
+                        <div class="data-module" tabindex="0">
+                            <h3>💻 TECH STATS & CERTIFICATION</h3>
+                            <div class="stat-line">
+                                <span>Primary Language:</span>
+                                <span class="stat-value"><strong>Python</strong> 🐍</span>
+                            </div>
+                            <div class="stat-line">
+                                <span>Experience Threshold:</span>
+                                <span class="stat-value"><strong>3+ Years</strong></span>
+                            </div>
+                            <div class="stat-line">
+                                <span>Mentorship Impact:</span>
+                                <span class="stat-value"><strong>15+ Students</strong> Taught</span>
+                            </div>
+                            <div class="stat-line">
+                                <span>Certification:</span>
+                                <span class="stat-value">MS <span class="highlight">AI-900</span></span>
+                            </div>
+                            <div class="stat-line">
+                                <span>Current Focus:</span>
+                                <span class="stat-value"><strong>Full Stack Dev</strong></span>
+                            </div>
+                        </div>
+
+                        <div class="data-module" tabindex="0">
+                            <h3>👑 LEADERSHIP COMMAND</h3>
+                            <div class="stat-line">
+                                <span>Project 01 (Charity):</span>
+                                <span class="stat-value">CEO, Checkmate ♟️</span>
+                            </div>
+                            <div class="stat-line">
+                                <span>Project 02 (Education):</span>
+                                <span class="stat-value">CEO, Math Spark ➕</span>
+                            </div>
+                            <div class="stat-line">
+                                <span>Focus Area:</span>
+                                <span class="stat-value">Manteca Community</span>
+                            </div>
+                            <div class="stat-line">
+                                <span>Mission Target:</span>
+                                <span class="stat-value">Non-Profit & Tutoring</span>
+                            </div>
+                            <div class="stat-line">
+                                <span>Total Volunteer Hours:</span>
+                                <span class="stat-value"><strong>200+</strong></span>
+                            </div>
+                        </div>
+
+                        <div class="data-module" tabindex="0">
+                            <h3>📊 PERSONAL & ACADEMIC VITAL</h3>
+                            <div class="stat-line">
+                                <span>Academic Status:</span>
+                                <span class="stat-value"><strong>Junior</strong></span>
+                            </div>
+                            <div class="stat-line">
+                                <span>GPA (Weighted):</span>
+                                <span class="stat-value"><strong>4.3</strong></span>
+                            </div>
+                            <div class="stat-line">
+                                <span>Athletic Discipline:</span>
+                                <span class="stat-value">Varsity Swimmer 🏊</span>
+                            </div>
+                            <div class="stat-line">
+                                <span>Creative/Strategy:</span>
+                                <span class="stat-value">Guitar & Chess 🎸</span>
+                            </div>
+                            <div class="stat-line">
+                                <span>Anticipated Major:</span>
+                                <span class="stat-value">Computer Science</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bio-section" style="margin-top: 60px;">
+                        <h2>// Skill Matrix: Proficiency Assessment</h2>
+                        <div class="data-grid" style="margin-top: 20px;">
+                            
+                            <div class="skill-bar">
+                                <div class="skill-bar-label"><span>Python / Data Analysis</span> <span>95%</span></div>
+                                <div class="progress-container"><div class="progress-bar" id="skill-python"></div></div>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-bar-label"><span>HTML / CSS / JS</span> <span>90%</span></div>
+                                <div class="progress-container"><div class="progress-bar" id="skill-web"></div></div>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-bar-label"><span>React / Front-End Dev</span> <span>75%</span></div>
+                                <div class="progress-container"><div class="progress-bar" id="skill-react"></div></div>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-bar-label"><span>AI / Machine Learning</span> <span>60%</span></div>
+                                <div class="progress-container"><div class="progress-bar" id="skill-ai"></div></div>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-bar-label"><span>Strategic Leadership</span> <span>95%</span></div>
+                                <div class="progress-container"><div class="progress-bar" id="skill-lead"></div></div>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-bar-label"><span>Public Speaking</span> <span>85%</span></div>
+                                <div class="progress-container"><div class="progress-bar" id="skill-speak"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bio-section">
+                        <h2>// Core Biography</h2>
+                        <p>I'm primarily a big brother to my 5 year old sister, and that taught me a lot about responsibility and getting things organized.</p>
+                        <p>I treat everything, from coding in Python to running our charity chess tournaments, like a big puzzle to figure out. I love learning new things and using my leadership skills to make a real difference in my community.</p>
+                        <p style="text-align: right; color: var(--accent-primary); margin-top: 20px;">[END OF DATA STREAM]</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        
+        <section id="contact" class="parallax-group" style="min-height: 50vh;">
+            <div class="parallax-layer-back" style="background: rgba(0, 0, 0, 0.4);"></div>
+            <div class="parallax-layer-base">
+                <div class="contact-content">
+                    <h2>// Terminal: Connect</h2>
+                    <p style="color: var(--text-light);">Initiate contact to discuss development, non-profits, or strategy.</p>
+                    <div style="margin-top: 20px;">
+                        <a href="mailto:abhimanyunair@outlook.com" title="Send Email">SEND EMAIL</a>
+                        <a href="https://github.com/nebulatheartificial" target="_blank" title="GitHub Profile">GITHUB REPO</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div> 
+
+    <script>
+        
+        const systemTimeElement = document.getElementById('system-time');
+
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            systemTimeElement.textContent = timeString;
+        }
+
+        
+        setInterval(updateClock, 1000);
+        updateClock();
+
+
+        
+        function animateSkills() {
+            const skills = [
+                { id: 'skill-python', percent: 95 },
+                { id: 'skill-web', percent: 90 },
+                { id: 'skill-react', percent: 75 },
+                { id: 'skill-ai', percent: 60 },
+                { id: 'skill-lead', percent: 95 },
+                { id: 'skill-speak', percent: 85 }
+            ];
+
+            skills.forEach(skill => {
+                const bar = document.getElementById(skill.id);
+                if (bar) {
+                    
+                    bar.style.width = '0%'; 
+                    
+                    setTimeout(() => {
+                        bar.style.width = skill.percent + '%';
+                    }, 500); 
+                }
+            });
+        }
+        
+        
+        const skillMatrix = document.querySelector('.bio-section:nth-of-type(1)');
+        
+        if (skillMatrix) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateSkills();
+                        
+                        observer.unobserve(entry.target); 
+                    }
+                });
+            }, {
+                threshold: 0.2
+            });
+
+            observer.observe(skillMatrix);
+        }
+
+        
+        const dataModules = document.querySelectorAll('.data-module');
+
+        dataModules.forEach(module => {
+            module.addEventListener('focus', () => {
+                module.style.zIndex = '30';
+            });
+            module.addEventListener('blur', () => {
+                module.style.zIndex = 'auto';
+            });
+        });
+
+
+        
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.parallax-layer-deep, .parallax-layer-back').forEach(layer => {
+                
+                layer.style.transform = layer.style.transform;
+            });
+        });
+        
+        
+        const wrapper = document.querySelector('.parallax-wrapper');
+        const colorStart = [16, 5, 32]; 
+        const colorEnd = [50, 20, 0]; 
+
+        function interpolateColor(color1, color2, factor) {
+            const r = Math.round(color1[0] + factor * (color2[0] - color1[0]));
+            const g = Math.round(color1[1] + factor * (color2[1] - color1[1]));
+            const b = Math.round(color1[2] + factor * (color2[2] - color1[2]));
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+        
+        function handleScrollColor() {
+            const maxScroll = wrapper.scrollHeight - wrapper.clientHeight;
+            if (maxScroll <= 0) return;
+
+            const scrollProgress = wrapper.scrollTop / maxScroll;
+            
+            
+            const progressFactor = 1 - Math.abs(2 * scrollProgress - 1); 
+            
+            
+            const newColor = interpolateColor(colorStart, colorEnd, progressFactor);
+
+            
+            document.documentElement.style.setProperty('--scroll-tint-color', newColor);
+        }
+
+        wrapper.addEventListener('scroll', handleScrollColor);
+        window.addEventListener('resize', handleScrollColor); 
+        handleScrollColor(); 
+
+    </script>
+</body>
+</html>
